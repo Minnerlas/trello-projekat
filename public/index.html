@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Trello clone</title>
+		<script defer>
+			async function create_user() {
+				const user = prompt('Add new user:');
+				const tmp = JSON.stringify({ user });
+
+				await fetch('/api/users', {
+					headers: {
+						"Content-Type": "application/json"
+					},
+					method: "POST",
+					body: tmp
+				});
+				window.location.reload();
+			}
+
+			async function add_status() {
+				const status = prompt('Add new status:');
+				const tmp = JSON.stringify({ status });
+
+				await fetch('/api/statuses', {
+					headers: {
+						"Content-Type": "application/json"
+					},
+					method: "POST",
+					body: tmp
+				});
+				window.location.reload();
+			}
+
+			let statuses = [];
+			let statusuls = [];
+
+			async function create_issue() {
+				const input_user = document.getElementById('input-user');
+				const edit_user = document.getElementById('edit-user');
+
+				const res = await fetch('/api/users');
+				const users = await res.json();
+
+				for (u of users) {
+					const opt = document.createElement('option');
+					opt.value = u.id;
+					opt.innerHTML = u.name;
+					input_user.appendChild(opt);
+					edit_user.appendChild(opt.cloneNode(true));
+				}
+			}
+
+			async function fetch_statuses() {
+				const res = await fetch('/api/statuses');
+				statuses = await res.json();
+			}
+
+			async function create_status() {
+				const input_status = document.getElementById('input-status');
+				const edit_status = document.getElementById('edit-status');
+				const statuscols = document.getElementById('statuscols');
+
+				for (s of statuses) {
+					const opt = document.createElement('option');
+
+					opt.value = s.id;
+					opt.innerHTML = s.name;
+					input_status.appendChild(opt);
+					edit_status.appendChild(opt.cloneNode(true));
+
+					const h2 = document.createElement('h2');
+					h2.innerText = s.name;
+					h2.classList.add('col-title');
+
+					const ul = document.createElement('ul');
+					ul.classList.add('task-col');
+
+					const li = document.createElement('li');
+					li.appendChild(h2);
+					li.appendChild(ul);
+
+					statuscols.appendChild(li);
+					statusuls[s.id] = ul;
+				}
+			}
+
+			function show_issue() {
+				const divformissue = document.getElementById('form-issue');
+				divformissue.classList.toggle("show");
+			}
+
+			async function input_save() {
+				const divformissue = document.getElementById('form-issue');
+				divformissue.classList.toggle("show");
+
+				const userId = parseInt(document.getElementById('input-user').value);
+				if (isNaN(userId)) {
+					alert('You must add a user first');
+					return;
+				}
+
+				const title = document.getElementById('input-title').value;
+				if (!title) {
+					alert("Title can't be empty");
+					return;
+				}
+
+				const description = document.getElementById('input-description').value;
+				if (!description) {
+					alert("Description can't be empty");
+					return;
+				}
+
+				const statusId = parseInt(document.getElementById('input-status').value);
+
+
+				const tmp = JSON.stringify({
+					title,
+					description,
+					statusId,
+					userId
+				});
+
+				await fetch('/api/tasks', {
+					headers: {
+						"Content-Type": "application/json"
+					},
+					method: "POST",
+					body: tmp
+				});
+				window.location.reload();
+			}
+
+			async function edit_save(id) {
+				const statusId = parseInt(document.getElementById('edit-status').value);
+				const userId = parseInt(document.getElementById('edit-user').value);
+
+				const tmp = JSON.stringify({
+					statusId,
+					userId
+				});
+
+				await fetch(`/api/task/${id}`, {
+					headers: {
+						"Content-Type": "application/json"
+					},
+					method: "PUT",
+					body: tmp
+				});
+				window.location.reload();
+			}
+
+			function edit_task(id) {
+				const divformedit = document.getElementById('form-edit');
+				const button = document.getElementById('edit-save');
+				button.onclick = () => edit_save(id);
+				divformedit.classList.toggle('show');
+			}
+
+			async function delete_task(id) {
+				await fetch(`/api/task/${id}`, { method: "DELETE", });
+				window.location.reload();
+			}
+
+			async function load_tasks() {
+				const statuscols = document.getElementById('statuscols');
+
+				const res = await fetch('/api/tasks');
+				const tasks = await res.json();
+				for (u of tasks) {
+					const id = u.id;
+					const li = document.createElement('li');
+					li.innerText = `${u.title}: ${u.description}`;
+
+					const span = document.createElement('span');
+
+					const btn_edit = document.createElement('button');
+					btn_edit.innerText = 'Edit';
+					btn_edit.onclick = () => {
+						edit_task(id);
+					};
+
+					span.appendChild(btn_edit);
+
+					const btn_delete = document.createElement('button');
+					btn_delete.innerText = 'Delete';
+					btn_delete.onclick = () => {
+						delete_task(id);
+					};
+
+					span.appendChild(btn_delete);
+
+					li.appendChild(span);
+
+					statusuls[u.statusId].appendChild(li);
+				}
+			}
+
+
+			async function load() {
+				await fetch_statuses();
+				await create_issue();
+				await create_status();
+				await load_tasks();
+			}
+		</script>
+		<link href="main.css" rel="stylesheet">
+	</head>
+	<body onload="load()">
+		<h1>Trello clone</h1>
+		<button onclick="create_user();">Create User</button>
+		<button onclick="show_issue();">Create Issue</button>
+		<button onclick="add_status();">Add status</button>
+		<br>
+		<br>
+		<ul id="statuscols">
+		</ul>
+		<div id="form-issue" class="div-form-issue">
+			<div class="form-issue">
+				<h2>Task</h2>
+				<label for="input-title">Title:</label>
+				<input id="input-title" type="text"/>
+				<label for="input-description">Description:</label>
+				<textarea id="input-description"></textarea>
+				<label for="input-status">Status:</label>
+				<select id="input-status"></select>
+				<label for="input-user">User:</label>
+				<select id="input-user"></select>
+				<button id="input-save" onclick="input_save();">
+					Save
+				</button>
+			</div>
+		</div>
+		<div id="form-edit" class="div-form-issue">
+			<div class="form-issue">
+				<h2>Task</h2>
+				<label for="edit-status">Status:</label>
+				<select id="edit-status"></select>
+				<label for="edit-user">User:</label>
+				<select id="edit-user"></select>
+				<button id="edit-save">
+					Save
+				</button>
+			</div>
+		</div>
+	</body>
+</html>

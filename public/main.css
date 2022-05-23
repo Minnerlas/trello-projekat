@@ -1,0 +1,59 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	text-align: center;
+}
+
+.col-title {
+	text-align: center;
+}
+
+.task-col > li {
+	border: 1px black solid;
+	display: flex;
+	justify-content: space-between;
+}
+
+body {
+	padding: 1rem;
+}
+
+#statuscols {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
+	gap: 1rem;
+	width: 100%;
+}
+
+#statuscols > li {
+	background-color: hsl(0, 0%, 90%);
+	padding: .5rem;
+}
+
+ul {
+	list-style: none;
+}
+
+.div-form-issue {
+	display: none;
+	position: fixed;
+	inset: 0;
+	place-content: center;
+	background-color: hsla(0, 0%, 0%, 30%);
+}
+
+.show {
+	display: grid;
+}
+
+.form-issue {
+	display: flex;
+	flex-direction: column;
+	background-color: white;
+	padding: 1rem;
+	gap: 1rem;
+}

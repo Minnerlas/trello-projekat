@@ -1,0 +1,3 @@
+Pokrenite `npm run init`, pa onda `npm run start`
+
+Ako treba obrisati sve, pokrenuti `npm run clean`
