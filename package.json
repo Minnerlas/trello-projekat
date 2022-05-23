@@ -5,8 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "init": "node src/init.js",
-    "build": "tsc",
-    "start": "pnpm build && node build/index.js",
+    "start": "tsc && node build/index.js",
 	"clean": "rm -rvf build database.db"
   },
   "keywords": [
