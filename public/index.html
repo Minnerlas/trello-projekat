@@ -5,7 +5,7 @@
 		<script defer>
 			async function create_user() {
 				const user = prompt('Add new user:');
-				if (user == null)
+				if (user == null || user == '')
 					return;
 				const tmp = JSON.stringify({ user });
 
@@ -21,7 +21,7 @@
 
 			async function add_status() {
 				const status = prompt('Add new status:');
-				if (status == null)
+				if (status == null || status == '')
 					return;
 				const tmp = JSON.stringify({ status });
 
