@@ -5,6 +5,8 @@
 		<script defer>
 			async function create_user() {
 				const user = prompt('Add new user:');
+				if (user == null)
+					return;
 				const tmp = JSON.stringify({ user });
 
 				await fetch('/api/users', {
@@ -19,6 +21,8 @@
 
 			async function add_status() {
 				const status = prompt('Add new status:');
+				if (status == null)
+					return;
 				const tmp = JSON.stringify({ status });
 
 				await fetch('/api/statuses', {
