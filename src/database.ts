@@ -1,16 +1,18 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import process from 'node:process';
+import sqlite3 from "sqlite3";
+import { open, Database } from "sqlite";
+import process from "node:process";
+import assert from "assert";
 
 
-let db: any = null;
+let db: Database | null = null;
 
 export async function init() {
 	db = await open({
-		filename: 'database.db',
+		filename: "database.db",
 		driver: sqlite3.Database
 	});
-	process.on('exit', async (code) => {
+	process.on("exit", async (code) => {
+		assert(db != null);
 		await db.close();
 		console.log(`About to exit with code: ${code}`);
 	});
@@ -26,10 +28,12 @@ export class Status {
 	}
 
 	static async getAll(): Promise<Status[]> {
-		return db.all('SELECT id, name FROM Status ORDER BY id');
+		assert(db != null);
+		return db.all("SELECT id, name FROM Status ORDER BY id");
 	}
 
 	static async add(name: string): Promise<Status> {
+		assert(db != null);
 		const {lastID} = await db.run("INSERT INTO Status (name) values (?)", name);
 		if (typeof(lastID) != "undefined")
 			return new Status(lastID, name);
@@ -48,10 +52,12 @@ export class User {
 	}
 
 	static async getAll(): Promise<User[]> {
-		return db.all('SELECT id, name FROM user');
+		assert(db != null);
+		return db.all("SELECT id, name FROM user");
 	}
 
 	static async add(name: string): Promise<User> {
+		assert(db != null);
 		const {lastID} = await db.run("INSERT INTO User (name) values (?)", name);
 		if (typeof(lastID) != "undefined")
 			return new User(lastID, name);
@@ -77,12 +83,14 @@ export class Task {
 	}
 
 	static async getAll(): Promise<Task[]> {
-		return db.all('SELECT * FROM task');
+		assert(db != null);
+		return db.all("SELECT * FROM task");
 	}
 
 	static async add(title: string, description: string, statusId: number,
-					 userId: number): Promise<Task> {
+		userId: number): Promise<Task> {
 
+		assert(db != null);
 		const {lastID} = await db.run(
 			`INSERT INTO Task (title, description, statusId, userId)
 			values (?, ?, ?, ?)`,
@@ -95,7 +103,8 @@ export class Task {
 	}
 
 	static async update(taskId: number, userId: number, statusId: number): Promise<void> {
-		const res = await db.run(
+		assert(db != null);
+		await db.run(
 			`UPDATE Task
 			SET (userId, statusId) = (?, ?)
 			WHERE id = ?;`,
@@ -103,7 +112,8 @@ export class Task {
 	}
 
 	static async delete(taskId: number): Promise<void> {
-		const res = await db.run(
+		assert(db != null);
+		await db.run(
 			`DELETE FROM Task
 			WHERE id = ?`,
 			taskId);

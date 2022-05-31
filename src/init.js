@@ -1,15 +1,15 @@
-import fs from 'fs';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite'
+import fs from "fs";
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
-const dir = './build';
+const dir = "./build";
 
 if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir);
+	fs.mkdirSync(dir);
 }
 
 const db = await open({
-	filename: 'database.db',
+	filename: "database.db",
 	driver: sqlite3.Database
 });
 
@@ -24,7 +24,7 @@ await db.exec(`CREATE TABLE IF NOT EXISTS Status (
 )`);
 
 await db.run( `INSERT INTO Status (name)
-	values ('Todo'), ('In progress'), ('Done')`);
+	values ("Todo"), ("In progress"), ("Done")`);
 
 await db.exec(`CREATE TABLE IF NOT EXISTS Task (
 	id INTEGER PRIMARY KEY,

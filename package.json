@@ -7,7 +7,7 @@
     "init": "node src/init.js",
     "build": "tsc",
     "start": "tsc && node build/index.js",
-	"clean": "rm -rvf build database.db"
+    "clean": "rm -rvf build database.db"
   },
   "keywords": [
     "trello"
@@ -15,6 +15,10 @@
   "author": "Никола Радојевић",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@eslint/create-config": "^0.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
     "express": "^4.18.1",
     "sqlite": "^4.1.1",
     "sqlite3": "^5.0.8"
