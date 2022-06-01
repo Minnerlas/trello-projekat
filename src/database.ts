@@ -4,10 +4,8 @@ import process from "node:process";
 import assert from "assert";
 
 
-let db: Database | null = null;
-
-export async function init() {
-	db = await open({
+const db: Database = await (async function() {
+	const db = await open({
 		filename: "database.db",
 		driver: sqlite3.Database
 	});
@@ -16,7 +14,8 @@ export async function init() {
 		await db.close();
 		console.log(`About to exit with code: ${code}`);
 	});
-}
+	return db;
+})();
 
 export class Status {
 	id: number;
@@ -119,4 +118,3 @@ export class Task {
 			taskId);
 	}
 }
-

@@ -1,8 +1,6 @@
 import express, { Express, Request, Response } from "express";
 
-import {init, Status, User, Task} from "./database.js";
-
-await init();
+import {Status, User, Task} from "./database.js";
 
 const app: Express = express();
 const port = 8000;
@@ -66,5 +64,3 @@ app.delete("/api/task/:id", async (req: Request, res: Response) => {
 app.listen(port, () => {
 	console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
 });
-
-
