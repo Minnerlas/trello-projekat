@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 
-import {Status, User, Task} from "./database.js";
+import { Status, User, Task } from "./database.js";
 
 const app: Express = express();
 const port = 8000;
